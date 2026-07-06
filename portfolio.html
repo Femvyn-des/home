@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alex Rivera — Design Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAFAF8;
+    --paper-dim:#F1F0EC;
+    --ink:#14151A;
+    --muted:#63656E;
+    --line:#DEDCD5;
+    --accent:#2E5CFF;
+    --accent-dim:#2E5CFF1A;
+    --radius:2px;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+  }
+
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    font-size:16px;
+    line-height:1.5;
+    overflow-x:hidden;
+  }
+
+  h1,h2,h3,.display{ font-family:'Space Grotesk', sans-serif; letter-spacing:-0.02em; }
+  .mono{ font-family:'JetBrains Mono', monospace; }
+
+  a{ color:inherit; text-decoration:none; }
+
+  /* --- background grid signature --- */
+  .grid-overlay{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      repeating-linear-gradient(90deg, transparent, transparent calc(100%/12 - 1px), var(--line) calc(100%/12 - 1px), var(--line) calc(100%/12));
+    opacity:0.5;
+  }
+  @media (max-width:720px){
+    .grid-overlay{
+      background-image: repeating-linear-gradient(90deg, transparent, transparent calc(100%/4 - 1px), var(--line) calc(100%/4 - 1px), var(--line) calc(100%/4));
+    }
+  }
+
+  .wrap{ position:relative; z-index:1; max-width:1180px; margin:0 auto; padding:0 40px; }
+  @media (max-width:720px){ .wrap{ padding:0 20px; } }
+
+  /* --- nav --- */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    background:rgba(250,250,248,0.85); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{ display:flex; align-items:center; justify-content:space-between; height:72px; }
+  .brand{ font-size:18px; font-weight:600; }
+  .brand span{ color:var(--accent); }
+  .nav-links{ display:flex; gap:36px; }
+  .nav-links a{ font-size:14px; color:var(--muted); transition:color 0.2s; position:relative; }
+  .nav-links a:hover, .nav-links a:focus-visible{ color:var(--ink); }
+  .nav-cta{
+    font-family:'JetBrains Mono', monospace; font-size:13px;
+    border:1px solid var(--ink); padding:8px 16px; border-radius:var(--radius);
+    transition:background 0.2s, color 0.2s;
+  }
+  .nav-cta:hover, .nav-cta:focus-visible{ background:var(--ink); color:var(--paper); }
+  .menu-btn{ display:none; background:none; border:none; cursor:pointer; }
+
+  @media (max-width:720px){
+    .nav-links{ display:none; }
+    .menu-btn{ display:block; }
+  }
+
+  a:focus-visible, button:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+
+  /* --- hero --- */
+  .hero{ padding:180px 0 120px; position:relative; }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:10px;
+    font-size:13px; color:var(--accent); margin-bottom:28px;
+  }
+  .eyebrow::before{ content:''; width:20px; height:1px; background:var(--accent); }
+
+  .hero h1{
+    font-size:clamp(48px, 8vw, 96px); font-weight:600; line-height:0.98;
+    max-width:900px;
+  }
+  .hero h1 em{ font-style:normal; color:var(--accent); }
+
+  .hero-sub{
+    display:flex; gap:60px; margin-top:56px; flex-wrap:wrap;
+  }
+  .spec-line{
+    font-size:13px; color:var(--muted);
+    padding-left:20px; position:relative; max-width:220px;
+  }
+  .spec-line::before{
+    content:''; position:absolute; left:0; top:6px; width:12px; height:1px; background:var(--muted);
+  }
+  .spec-line strong{ display:block; color:var(--ink); font-size:14px; margin-bottom:4px; font-family:'Inter',sans-serif; font-weight:600; }
+
+  /* --- section shell --- */
+  section{ padding:100px 0; border-top:1px solid var(--line); }
+  .section-head{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:56px; flex-wrap:wrap; gap:16px; }
+  .section-head h2{ font-size:clamp(30px,4vw,44px); font-weight:600; }
+  .section-tag{ font-size:13px; color:var(--muted); max-width:320px; text-align:right; }
+  @media (max-width:720px){ .section-tag{ text-align:left; } }
+
+  /* --- about --- */
+  .about-grid{ display:grid; grid-template-columns:1.1fr 0.9fr; gap:80px; }
+  @media (max-width:860px){ .about-grid{ grid-template-columns:1fr; gap:40px; } }
+  .about-text p{ font-size:19px; color:var(--muted); margin-bottom:20px; max-width:520px; }
+  .about-text p strong{ color:var(--ink); font-weight:600; }
+  .about-facts{ border-left:1px solid var(--line); padding-left:32px; display:flex; flex-direction:column; gap:24px; }
+  .fact{ }
+  .fact .num{ font-size:13px; color:var(--accent); }
+  .fact .label{ font-size:15px; margin-top:4px; }
+
+  /* --- services --- */
+  .services{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); }
+  @media (max-width:860px){ .services{ grid-template-columns:1fr; } }
+  .service{
+    background:var(--paper); padding:40px 32px; position:relative; transition:background 0.25s;
+  }
+  .service:hover{ background:var(--paper-dim); }
+  .service .idx{ font-size:13px; color:var(--accent); margin-bottom:24px; display:block; }
+  .service h3{ font-size:22px; font-weight:600; margin-bottom:12px; }
+  .service p{ font-size:14.5px; color:var(--muted); margin-bottom:20px; }
+  .service ul{ list-style:none; font-size:13px; color:var(--muted); }
+  .service li{ padding:4px 0; border-top:1px dashed var(--line); }
+  .service li:first-child{ border-top:none; }
+
+  /* --- work --- */
+  .work-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:32px; }
+  @media (max-width:860px){ .work-grid{ grid-template-columns:1fr; } }
+
+  .card{
+    position:relative; border:1px solid var(--line); overflow:hidden; border-radius:var(--radius);
+    background:var(--paper);
+  }
+  .card-visual{
+    height:280px; position:relative; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .card-visual svg{ width:100%; height:100%; }
+
+  .card-body{ padding:24px 28px 28px; position:relative; }
+  .card-body .cat{ font-size:12px; color:var(--accent); margin-bottom:8px; display:block; }
+  .card-body h3{ font-size:22px; font-weight:600; margin-bottom:8px; }
+  .card-body p{ font-size:14px; color:var(--muted); max-width:400px; }
+
+  .spec-overlay{
+    position:absolute; inset:0; background:rgba(20,21,26,0.94); color:var(--paper);
+    padding:24px 28px; opacity:0; transform:translateY(8px);
+    transition:opacity 0.25s ease, transform 0.25s ease;
+    display:flex; flex-direction:column; justify-content:center; gap:14px;
+  }
+  .card:hover .spec-overlay, .card:focus-within .spec-overlay{ opacity:1; transform:translateY(0); }
+  .spec-row{ display:flex; justify-content:space-between; font-size:13px; border-bottom:1px dashed rgba(255,255,255,0.2); padding-bottom:8px; }
+  .spec-row span:first-child{ color:rgba(255,255,255,0.55); }
+
+  /* --- process --- */
+  .process-list{ display:flex; flex-direction:column; }
+  .process-item{
+    display:grid; grid-template-columns:80px 1fr 1fr; gap:24px; padding:28px 0;
+    border-top:1px solid var(--line); align-items:baseline;
+  }
+  .process-list .process-item:last-child{ border-bottom:1px solid var(--line); }
+  @media (max-width:720px){ .process-item{ grid-template-columns:50px 1fr; } .process-item .p-desc{ grid-column:2/3; } }
+  .process-item .p-num{ font-size:13px; color:var(--accent); }
+  .process-item h3{ font-size:20px; font-weight:600; }
+  .process-item p{ font-size:14.5px; color:var(--muted); }
+
+  /* --- contact --- */
+  .contact{ text-align:center; }
+  .contact h2{ font-size:clamp(36px,6vw,64px); font-weight:600; max-width:800px; margin:0 auto 28px; }
+  .contact p{ color:var(--muted); font-size:16px; margin-bottom:40px; }
+  .contact-actions{ display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+  .btn-primary{
+    background:var(--ink); color:var(--paper); padding:16px 32px; border-radius:var(--radius);
+    font-size:14px; font-weight:500; transition:background 0.2s;
+  }
+  .btn-primary:hover, .btn-primary:focus-visible{ background:var(--accent); }
+  .btn-secondary{
+    border:1px solid var(--line); padding:16px 32px; border-radius:var(--radius); font-size:14px;
+    transition:border-color 0.2s;
+  }
+  .btn-secondary:hover, .btn-secondary:focus-visible{ border-color:var(--ink); }
+
+  footer{ border-top:1px solid var(--line); padding:32px 0; }
+  footer .wrap{ display:flex; justify-content:space-between; font-size:13px; color:var(--muted); flex-wrap:wrap; gap:12px; }
+
+  /* fade in on scroll */
+  .reveal{ opacity:0; transform:translateY(16px); transition:opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="grid-overlay" aria-hidden="true"></div>
+
+<nav>
+  <div class="wrap">
+    <a href="#top" class="brand">Alex Rivera<span>.</span></a>
+    <div class="nav-links">
+      <a href="#work">Work</a>
+      <a href="#services">Services</a>
+      <a href="#process">Process</a>
+      <a href="#about">About</a>
+    </div>
+    <a href="#contact" class="nav-cta">Start a project →</a>
+  </div>
+</nav>
+
+<main id="top">
+
+  <section class="hero" style="border-top:none;">
+    <div class="wrap">
+      <div class="eyebrow mono">DESIGNER — WEB / GRAPHICS / PRODUCT</div>
+      <h1>Design that holds up<br>under <em>scrutiny.</em></h1>
+      <div class="hero-sub">
+        <div class="spec-line mono">
+          <strong>Based in</strong>
+          Lagos, Nigeria — working with clients worldwide
+        </div>
+        <div class="spec-line mono">
+          <strong>Practice</strong>
+          Websites, visual identity, product & UI design
+        </div>
+        <div class="spec-line mono">
+          <strong>Available</strong>
+          Booking new projects for Q4 2026
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="wrap">
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <p>I'm <strong>Alex Rivera</strong>, a designer who moves between three disciplines because most good ideas don't stay in one lane. A brand needs a site. A site needs a product behind it. A product needs a face people trust.</p>
+          <p>I work directly with founders and small teams to take a rough idea through to something shipped — <strong>the strategy, the pixels, and the handoff notes</strong> included.</p>
+        </div>
+        <div class="about-facts reveal">
+          <div class="fact">
+            <div class="num mono">01</div>
+            <div class="label">7 years across agency and freelance practice</div>
+          </div>
+          <div class="fact">
+            <div class="num mono">02</div>
+            <div class="label">30+ projects shipped for startups and studios</div>
+          </div>
+          <div class="fact">
+            <div class="num mono">03</div>
+            <div class="label">Solo practice — every project gets full attention</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="services">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>What I do</h2>
+        <div class="section-tag">Three disciplines, one point of view — each informs the others.</div>
+      </div>
+    </div>
+    <div class="wrap" style="padding:0 40px;">
+      <div class="services reveal">
+        <div class="service">
+          <span class="idx mono">/ 01</span>
+          <h3>Website Design</h3>
+          <p>Marketing sites and web apps that are fast, legible, and built to convert — not just to look good in a portfolio.</p>
+          <ul>
+            <li>Marketing & landing pages</li>
+            <li>Design systems for the web</li>
+            <li>Webflow / code handoff</li>
+          </ul>
+        </div>
+        <div class="service">
+          <span class="idx mono">/ 02</span>
+          <h3>Graphic Design</h3>
+          <p>Identity systems that hold together across a logo, a deck, a package, and a social feed.</p>
+          <ul>
+            <li>Brand identity & logo systems</li>
+            <li>Print & packaging</li>
+            <li>Pitch decks & brand guidelines</li>
+          </ul>
+        </div>
+        <div class="service">
+          <span class="idx mono">/ 03</span>
+          <h3>Product Design</h3>
+          <p>End-to-end UI/UX for digital products, from first wireframe to a spec-ready file for engineering.</p>
+          <ul>
+            <li>UX flows & wireframes</li>
+            <li>UI design & prototyping</li>
+            <li>Design systems & component libraries</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>Selected work</h2>
+        <div class="section-tag">Hover a project for the spec — role, tools, and scope.</div>
+      </div>
+      <div class="work-grid">
+
+        <div class="card reveal" tabindex="0">
+          <div class="card-visual" style="background:linear-gradient(135deg,#EDEBE3,#DEDCD5);">
+            <svg viewBox="0 0 400 280" preserveAspectRatio="xMidYMid slice">
+              <rect x="40" y="60" width="140" height="160" fill="none" stroke="#14151A" stroke-width="1.5"/>
+              <rect x="220" y="40" width="140" height="90" fill="#2E5CFF" opacity="0.85"/>
+              <circle cx="290" cy="200" r="40" fill="none" stroke="#14151A" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div class="card-body">
+            <span class="cat mono">WEBSITE</span>
+            <h3>Norrpine — Studio Site</h3>
+            <p>A marketing site for an architecture studio, built around an oversized project archive.</p>
+          </div>
+          <div class="spec-overlay">
+            <div class="spec-row mono"><span>Role</span><span>Design + build</span></div>
+            <div class="spec-row mono"><span>Tools</span><span>Figma, Webflow</span></div>
+            <div class="spec-row mono"><span>Scope</span><span>Site, CMS, style guide</span></div>
+            <div class="spec-row mono"><span>Year</span><span>2026</span></div>
+          </div>
+        </div>
+
+        <div class="card reveal" tabindex="0">
+          <div class="card-visual" style="background:linear-gradient(135deg,#E6E4DC,#F1F0EC);">
+            <svg viewBox="0 0 400 280" preserveAspectRatio="xMidYMid slice">
+              <polygon points="200,50 320,220 80,220" fill="none" stroke="#14151A" stroke-width="1.5"/>
+              <circle cx="200" cy="150" r="26" fill="#2E5CFF"/>
+            </svg>
+          </div>
+          <div class="card-body">
+            <span class="cat mono">IDENTITY</span>
+            <h3>Delta & Vine — Brand System</h3>
+            <p>Visual identity and packaging for a small-batch beverage brand launching in three markets.</p>
+          </div>
+          <div class="spec-overlay">
+            <div class="spec-row mono"><span>Role</span><span>Identity design</span></div>
+            <div class="spec-row mono"><span>Tools</span><span>Illustrator, InDesign</span></div>
+            <div class="spec-row mono"><span>Scope</span><span>Logo, packaging, deck</span></div>
+            <div class="spec-row mono"><span>Year</span><span>2025</span></div>
+          </div>
+        </div>
+
+        <div class="card reveal" tabindex="0">
+          <div class="card-visual" style="background:linear-gradient(135deg,#DEDCD5,#EDEBE3);">
+            <svg viewBox="0 0 400 280" preserveAspectRatio="xMidYMid slice">
+              <rect x="60" y="40" width="280" height="200" rx="6" fill="none" stroke="#14151A" stroke-width="1.5"/>
+              <line x1="60" y1="90" x2="340" y2="90" stroke="#14151A" stroke-width="1"/>
+              <rect x="80" y="110" width="100" height="60" fill="#2E5CFF" opacity="0.85"/>
+            </svg>
+          </div>
+          <div class="card-body">
+            <span class="cat mono">PRODUCT</span>
+            <h3>Fieldnote — Mobile App</h3>
+            <p>UX and UI for a field-research app used by survey teams, with an offline-first component library.</p>
+          </div>
+          <div class="spec-overlay">
+            <div class="spec-row mono"><span>Role</span><span>Product design</span></div>
+            <div class="spec-row mono"><span>Tools</span><span>Figma, Principle</span></div>
+            <div class="spec-row mono"><span>Scope</span><span>UX flows, UI kit, handoff</span></div>
+            <div class="spec-row mono"><span>Year</span><span>2025</span></div>
+          </div>
+        </div>
+
+        <div class="card reveal" tabindex="0">
+          <div class="card-visual" style="background:linear-gradient(135deg,#F1F0EC,#DEDCD5);">
+            <svg viewBox="0 0 400 280" preserveAspectRatio="xMidYMid slice">
+              <line x1="60" y1="220" x2="140" y2="90" stroke="#14151A" stroke-width="1.5"/>
+              <line x1="140" y1="90" x2="240" y2="180" stroke="#14151A" stroke-width="1.5"/>
+              <line x1="240" y1="180" x2="340" y2="60" stroke="#2E5CFF" stroke-width="2"/>
+            </svg>
+          </div>
+          <div class="card-body">
+            <span class="cat mono">WEBSITE</span>
+            <h3>Altitude — SaaS Landing</h3>
+            <p>A conversion-focused landing page and design system for a data analytics platform.</p>
+          </div>
+          <div class="spec-overlay">
+            <div class="spec-row mono"><span>Role</span><span>Design + design system</span></div>
+            <div class="spec-row mono"><span>Tools</span><span>Figma, React</span></div>
+            <div class="spec-row mono"><span>Scope</span><span>Landing page, components</span></div>
+            <div class="spec-row mono"><span>Year</span><span>2026</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="process">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>How a project runs</h2>
+        <div class="section-tag">Four stages, roughly 4–8 weeks depending on scope.</div>
+      </div>
+      <div class="process-list reveal">
+        <div class="process-item">
+          <div class="p-num mono">01</div>
+          <h3>Discover</h3>
+          <p class="p-desc">A short working session to define the problem, audience, and what "done" looks like.</p>
+        </div>
+        <div class="process-item">
+          <div class="p-num mono">02</div>
+          <h3>Direction</h3>
+          <p class="p-desc">Two or three distinct directions, presented early so we agree on a point of view before details.</p>
+        </div>
+        <div class="process-item">
+          <div class="p-num mono">03</div>
+          <h3>Design</h3>
+          <p class="p-desc">Full designs, refined in rounds, with regular check-ins instead of a single big reveal.</p>
+        </div>
+        <div class="process-item">
+          <div class="p-num mono">04</div>
+          <h3>Handoff</h3>
+          <p class="p-desc">Organized files, specs, and assets — ready for your team or your developer to build from.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <div class="wrap">
+      <div class="reveal">
+        <div class="eyebrow mono" style="justify-content:center;">GET IN TOUCH</div>
+        <h2>Have a project<br>worth designing well?</h2>
+        <p>I take on a small number of projects at a time. Tell me about yours.</p>
+        <div class="contact-actions">
+          <a href="mailto:hello@alexrivera.design" class="btn-primary">Email hello@alexrivera.design</a>
+          <a href="#" class="btn-secondary">Book a call</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Alex Rivera. Website, graphics & product design.</span>
+    <span class="mono">Lagos, NG</span>
+  </div>
+</footer>
+
+<script>
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
